@@ -25,6 +25,11 @@ public:
 
     // Copy assignment.
     MySharedPtr& operator=(const MySharedPtr<T>& other){
+        // same shared_ptr is passed to copy assignment. Hence ignore.
+        if(ptr_ == other.ptr_){
+            return *this;
+        }
+
         __cleanup__();
 
         ptr_ = other.ptr_;
@@ -46,6 +51,11 @@ public:
 
     // Move assignment.
     MySharedPtr& operator=(MySharedPtr&& dying_obj){
+        // same shared_ptr is passed to move assignment. Hence ignore.
+        if(ptr_ == dying_obj.ptr_){
+            return *this;
+        }
+
         __cleanup__();
 
         ptr_ = dying_obj.ptr_;
@@ -132,4 +142,14 @@ int main(){
     t = move(s);
     cout << t.get_ptr() << endl; /* should match with previous q ptr */
     cout << s.get_ptr() << endl; /* 0 */
+
+    // Test passing same shared_ptr to move assignment
+    MySharedPtr<int> u(new int(5));
+    u = std::move(u);
+    cout << u.get_ref_count() << endl; /* 1 */
+
+    // Test passing same shared_ptr to copy assignment
+    MySharedPtr<int> v(new int(5));
+    v = v;
+    cout << v.get_ref_count() << endl; /* 1 */
 }
