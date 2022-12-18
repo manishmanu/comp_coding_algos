@@ -1,6 +1,4 @@
 #include <iostream>
-#include <utility>
-using namespace std;
 
 // Reference:
 // https://medium.com/analytics-vidhya/c-shared-ptr-and-how-to-write-your-own-d0d385c118ad
@@ -73,22 +71,22 @@ public:
     }
 
     // Overload -> operator.
-    T* operator->(){
+    T* operator->() const{
         return ptr_;
     }
 
     // Overload * operator.
-    T& operator*(){
+    T& operator*() const{
         return *ptr_;
     }
 
     // Get ptr.
-    T* get_ptr(){
+    T* get_ptr() const{
         return ptr_;
     }
 
     // Get ref count.
-    uint32_t get_ref_count(){
+    uint32_t get_ref_count() const{
         return ref_count_ ? *ref_count_ : 0;
     }
     
@@ -110,46 +108,46 @@ private:
 int main(){
     // Test default constructor.
     MySharedPtr<int> p;
-    cout << p.get_ref_count() << endl; /* 0 */
-    cout << p.get_ptr() << endl; /* 0 */
+    std::cout << p.get_ref_count() << std::endl; /* 0 */
+    std::cout << p.get_ptr() << std::endl; /* 0 */
 
     // Test constructor.
     MySharedPtr<int> q(new int(3));
-    cout << q.get_ref_count() << endl; /* 1 */
-    cout << q.get_ptr() << endl; /* non-zero */
+    std::cout << q.get_ref_count() << std::endl; /* 1 */
+    std::cout << q.get_ptr() << std::endl; /* non-zero */
 
     // Test copy constructor.
     MySharedPtr<int> r = q;
-    cout << q.get_ref_count() << endl; /* 2 */
-    cout << r.get_ref_count() << endl; /* 2 */
+    std::cout << q.get_ref_count() << std::endl; /* 2 */
+    std::cout << r.get_ref_count() << std::endl; /* 2 */
 
     // Test assign operator.
     r = p;
-    cout << r.get_ref_count() << endl; /* 0 */
-    cout << r.get_ptr() << endl; /* 0 */
-    cout << q.get_ref_count() << endl; /* 1 */
+    std::cout << r.get_ref_count() << std::endl; /* 0 */
+    std::cout << r.get_ptr() << std::endl; /* 0 */
+    std::cout << q.get_ref_count() << std::endl; /* 1 */
 
     // Test move contructor.
-    MySharedPtr<int> s = move(q);
-    cout << s.get_ref_count() << endl; /* 1 */
-    cout << s.get_ptr() << endl; /* should match with previous q ptr */
-    cout << q.get_ptr() << endl; /* 0 */
-    cout << q.get_ref_count() << endl;
+    MySharedPtr<int> s = std::move(q);
+    std::cout << s.get_ref_count() << std::endl; /* 1 */
+    std::cout << s.get_ptr() << std::endl; /* should match with previous q ptr */
+    std::cout << q.get_ptr() << std::endl; /* 0 */
+    std::cout << q.get_ref_count() << std::endl; /* 0 */
 
     // Test move assignment operator.
     MySharedPtr<int> t(new int(3));
-    cout << t.get_ptr() << endl; /* non-zero */
-    t = move(s);
-    cout << t.get_ptr() << endl; /* should match with previous q ptr */
-    cout << s.get_ptr() << endl; /* 0 */
+    std::cout << t.get_ptr() << std::endl; /* non-zero */
+    t = std::move(s);
+    std::cout << t.get_ptr() << std::endl; /* should match with previous q ptr */
+    std::cout << s.get_ptr() << std::endl; /* 0 */
 
     // Test passing same shared_ptr to move assignment
     MySharedPtr<int> u(new int(5));
     u = std::move(u);
-    cout << u.get_ref_count() << endl; /* 1 */
+    std::cout << u.get_ref_count() << std::endl; /* 1 */
 
     // Test passing same shared_ptr to copy assignment
     MySharedPtr<int> v(new int(5));
     v = v;
-    cout << v.get_ref_count() << endl; /* 1 */
+    std::cout << v.get_ref_count() << std::endl; /* 1 */
 }
