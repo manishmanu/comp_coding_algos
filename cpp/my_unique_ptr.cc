@@ -1,5 +1,8 @@
 #include <iostream>
 
+// Reference:
+// https://medium.com/swlh/c-smart-pointers-and-how-to-write-your-own-c0adcbdce04f
+
 template <typename T>
 class MyUniquePtr{
 public:
